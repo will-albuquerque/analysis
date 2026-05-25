@@ -86,10 +86,8 @@ lemma Nat.add_succ (n m:Nat) : n + (m++) = (n + m)++ := by
 theorem Nat.succ_eq_add_one (n:Nat) : n++ = n + 1 := by
   revert n
   apply induction
-  case hbase =>
-    rw [zero_add, zero_succ]
-  case hind =>
-    intro n ih
+  . rw [zero_add, zero_succ]
+  . intro n ih
     rw [succ_add, ih]
 
 /-- Proposition 2.2.4 (Addition is commutative). Compare with Mathlib's {name}`Nat.add_comm` -/
