@@ -164,12 +164,30 @@ theorem SetTheory.Set.not_mem_empty : ∀ x, x ∉ (∅:Set) := emptyset_mem
 
 /-- Empty set has no elements -/
 theorem SetTheory.Set.eq_empty_iff_forall_notMem {X:Set} : X = ∅ ↔ (∀ x, x ∉ X) := by
-  sorry
+  apply Iff.intro
+  . intro h
+    rw [h]
+    apply not_mem_empty
+  . intro h
+    have h2 (x:Object) : x ∈ X ↔ x ∈ (∅:Set) := by
+      apply Iff.intro
+      . intro h2z
+        have h3 : x ∉ X := h x
+        contradiction
+      . intro h2
+        have h3 : x ∉ ∅ := not_mem_empty x
+        contradiction
+    exact ext h2
 
 /-- Empty set is unique -/
 theorem SetTheory.Set.empty_unique : ∃! (X:Set), ∀ x, x ∉ X := by
-  sorry
-
+  apply ExistsUnique.intro
+  . intro x
+    exact not_mem_empty x
+  . intro Y h
+    rw [eq_empty_iff_forall_notMem]
+    exact h
+  
 /-- Lemma 3.1.5 (Single choice) -/
 lemma SetTheory.Set.nonempty_def {X:Set} (h: X ≠ ∅) : ∃ x, x ∈ X := by
   -- This proof is written to follow the structure of the original text.
