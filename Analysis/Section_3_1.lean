@@ -282,7 +282,14 @@ theorem SetTheory.Set.pair_self (a:Object) : ({a,a}:Set) = {a} := by
 /-- Exercise 3.1.1 -/
 theorem SetTheory.Set.pair_eq_pair {a b c d:Object} (h: ({a,b}:Set) = {c,d}) :
     a = c ∧ b = d ∨ a = d ∧ b = c := by
-  sorry
+  rw [Set.ext_iff] at h
+  have ha : a ∈ ({a, b}: Set) := (mem_pair a a b).mpr (Or.inl rfl)
+  have hb : b ∈ ({a, b}: Set) := (mem_pair b a b).mpr (Or.inr rfl)
+  have hc : c ∈ ({c, d}: Set) := (mem_pair c c d).mpr (Or.inl rfl)
+  have hd : d ∈ ({c, d}: Set) := (mem_pair d c d).mpr (Or.inr rfl)
+  rw [h, mem_pair] at ha hb
+  rw [← h, mem_pair] at hc hd
+  tauto
 
 abbrev SetTheory.Set.empty : Set := ∅
 abbrev SetTheory.Set.singleton_empty : Set := {(empty: Object)}
