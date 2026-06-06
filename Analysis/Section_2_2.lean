@@ -183,7 +183,15 @@ extracts a witness `x` and a proof `hx : P x` of the property from a hypothesis 
 
 /-- Lemma 2.2.10 (unique predecessor) / Exercise 2.2.2 -/
 lemma Nat.uniq_succ_eq (a:Nat) (ha: a.IsPos) : ∃! b, b++ = a := by
-  sorry
+  revert a
+  apply induction
+  . intro h
+    contradiction
+  . intro a ih h
+    apply ExistsUnique.intro
+    . rfl
+    . intro c hc
+      exact succ_cancel hc
 
 /-- Definition 2.2.11 (Ordering of the natural numbers).
     This defines the {kw (of := «term_≤_»)}`≤` notation on the natural numbers. -/
