@@ -336,10 +336,14 @@ theorem SetTheory.Set.union_congr_right (A B B':Set) (h: B = B') : A ∪ B = A �
 /-- Lemma 3.1.12 (Basic properties of unions) / Exercise 3.1.3 -/
 theorem SetTheory.Set.singleton_union_singleton (a b:Object) :
     ({a}:Set) ∪ ({b}:Set) = {a,b} := by
-  sorry
+  ext x
+  rw [mem_union, mem_singleton, mem_singleton, mem_pair]
 
 /-- Lemma 3.1.12 (Basic properties of unions) / Exercise 3.1.3 -/
-theorem SetTheory.Set.union_comm (A B:Set) : A ∪ B = B ∪ A := by sorry
+theorem SetTheory.Set.union_comm (A B:Set) : A ∪ B = B ∪ A := by
+  ext x
+  repeat rw [mem_union]
+  rw [Or.comm]
 
 /-- Lemma 3.1.12 (Basic properties of unions) / Exercise 3.1.3 -/
 theorem SetTheory.Set.union_assoc (A B C:Set) : (A ∪ B) ∪ C = A ∪ (B ∪ C) := by
