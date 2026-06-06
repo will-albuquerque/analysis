@@ -371,12 +371,16 @@ theorem SetTheory.Set.union_self (A:Set) : A ∪ A = A := by
 /-- Proposition 3.1.27(a) -/
 @[simp]
 theorem SetTheory.Set.union_empty (A:Set) : A ∪ ∅ = A := by
-  sorry
+  ext x
+  rw [mem_union]
+  have : x ∉ ∅ := not_mem_empty x
+  exact or_iff_left this
 
 /-- Proposition 3.1.27(a) -/
 @[simp]
 theorem SetTheory.Set.empty_union (A:Set) : ∅ ∪ A = A := by
-  sorry
+  rw [union_comm]
+  exact union_empty A
 
 theorem SetTheory.Set.triple_eq (a b c:Object) : {a,b,c} = ({a}:Set) ∪ {b,c} := by
   rfl
