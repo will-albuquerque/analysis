@@ -297,14 +297,27 @@ abbrev SetTheory.Set.pair_empty : Set := {(empty: Object), (singleton_empty: Obj
 
 /-- Exercise 3.1.2 -/
 theorem SetTheory.Set.emptyset_neq_singleton : empty ≠ singleton_empty := by
-  sorry
+  intro h
+  have : (empty: Object) ∈ singleton_empty := by rw [mem_singleton]
+  simp [← h] at this
 
 /-- Exercise 3.1.2 -/
-theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty := by sorry
+theorem SetTheory.Set.emptyset_neq_pair : empty ≠ pair_empty := by
+  intro h
+  have : (empty: Object) ∈ pair_empty := by
+    rw [mem_pair]
+    tauto
+  simp [← h] at this
 
 /-- Exercise 3.1.2 -/
 theorem SetTheory.Set.singleton_empty_neq_pair : singleton_empty ≠ pair_empty := by
-  sorry
+  intro h
+  have : (singleton_empty: Object) ∈ pair_empty := by
+    rw [mem_pair]
+    tauto
+  simp [← h] at this
+  have := emptyset_neq_singleton
+  tauto
 
 /--
   Remark 3.1.11.
