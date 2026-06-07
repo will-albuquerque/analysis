@@ -252,7 +252,9 @@ theorem Nat.succ_gt_self (n:Nat) : n++ > n := by
 
 (a) (Order is reflexive). Compare with Mathlib's {name}`Nat.le_refl`.-/
 theorem Nat.ge_refl (a:Nat) : a ≥ a := by
-  sorry
+  rw [Nat.ge_iff_le, Nat.le_iff]
+  constructor
+  . rw [add_zero]
 
 @[refl]
 theorem Nat.le_refl (a:Nat) : a ≤ a := a.ge_refl
@@ -263,17 +265,38 @@ example (a b:Nat): a+b ≥ a+b := by rfl
 /-- (b) (Order is transitive).  The {tactic}`obtain` tactic will be useful here.
     Compare with Mathlib's {name}`Nat.le_trans`. -/
 theorem Nat.ge_trans {a b c:Nat} (hab: a ≥ b) (hbc: b ≥ c) : a ≥ c := by
-  sorry
+  rw [Nat.ge_iff_le] at hab hbc
+  obtain ⟨x, hx⟩ := hab
+  obtain ⟨y, hy⟩ := hbc
+  use x + y
+  rw [hx, hy, add_assoc, add_comm y x]
 
 theorem Nat.le_trans {a b c:Nat} (hab: a ≤ b) (hbc: b ≤ c) : a ≤ c := Nat.ge_trans hbc hab
 
 /-- (c) (Order is anti-symmetric). Compare with Mathlib's {name}`Nat.le_antisymm`. -/
 theorem Nat.ge_antisymm {a b:Nat} (hab: a ≥ b) (hba: b ≥ a) : a = b := by
-  sorry
+  rw [Nat.ge_iff_le] at hab hba
+  obtain ⟨x, hx⟩ := hab
+  obtain ⟨y, hy⟩ := hba
+  rw [← add_zero b, hx, add_assoc] at hy
+  apply add_left_cancel at hy
+  symm at hy
+  apply Nat.add_eq_zero at hy
+  rw [hy.left, add_zero] at hx
+  exact hx
 
 /-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_right`. -/
 theorem Nat.add_ge_add_right (a b c:Nat) : a ≥ b ↔ a + c ≥ b + c := by
-  sorry
+  constructor <;> intro h
+  . rw [Nat.ge_iff_le] at *
+    rcases h with ⟨x, hx⟩
+    use x
+    rw [add_comm b c, add_assoc, ← hx, add_comm]
+  . rw [Nat.ge_iff_le] at *
+    rcases h with ⟨x, hx⟩
+    rw [add_comm a, add_comm b, add_assoc] at hx
+    apply add_left_cancel at hx
+    use x
 
 /-- (d) (Addition preserves order).  Compare with Mathlib's {name}`Nat.add_le_add_left`.  -/
 theorem Nat.add_ge_add_left (a b c:Nat) : a ≥ b ↔ c + a ≥ c + b := by
@@ -288,11 +311,49 @@ theorem Nat.add_le_add_left (a b c:Nat) : a ≤ b ↔ c + a ≤ c + b := add_ge_
 
 /-- (e) a < b iff a++ ≤ b.  Compare with Mathlib's {name}`Nat.succ_le_iff`. -/
 theorem Nat.lt_iff_succ_le (a b:Nat) : a < b ↔ a++ ≤ b := by
-  sorry
+  constructor <;> intro h
+  . rcases h with ⟨⟨x, hx⟩, hne⟩
+    have hp : x.IsPos := by
+      by_cases hp : x.IsPos
+      . exact hp
+      . rw [Nat.isPos_iff, not_not] at hp
+        rw [hp, add_zero] at hx
+        rw [hx] at hne
+        contradiction
+    apply Nat.uniq_succ_eq at hp
+    rcases hp with ⟨y, ⟨hy, _⟩⟩
+    rw [← hy, add_succ, ← succ_add] at hx
+    use y
+  . rcases h with ⟨x, hx⟩
+    rw [succ_add, ← add_succ] at hx
+    constructor
+    . use (x++)
+    . intro h
+      rw [← add_zero b, h] at hx
+      apply add_left_cancel at hx
+      observe hne : x++ ≠ 0
+      rw [hx] at hne
+      contradiction
 
 /-- (f) a < b if and only if b = a + d for positive d. -/
 theorem Nat.lt_iff_add_pos (a b:Nat) : a < b ↔ ∃ d:Nat, d.IsPos ∧ b = a + d := by
-  sorry
+  constructor <;> intro h
+  . rcases h with ⟨⟨x, hx⟩, hne⟩
+    by_cases hp : x.IsPos
+    . use x
+    . rw [Nat.isPos_iff, not_not] at hp
+      rw [hp, add_zero] at hx
+      rw [hx] at hne
+      contradiction
+  . rw [Nat.lt_iff]
+    rcases h with ⟨x, ⟨hp, hab⟩⟩
+    constructor
+    . use x
+    . intro heq
+      rw [← add_zero a, hab] at heq
+      apply add_left_cancel at heq
+      rw [Nat.isPos_iff, heq] at hp
+      contradiction
 
 /-- If a < b then a ̸= b,-/
 theorem Nat.ne_of_lt (a b:Nat) : a < b → a ≠ b := by
