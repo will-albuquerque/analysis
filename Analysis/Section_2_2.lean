@@ -238,7 +238,15 @@ example : (8:Nat) > 5 := by
 
 /-- Compare with Mathlib's {name}`Nat.lt_succ_self`. -/
 theorem Nat.succ_gt_self (n:Nat) : n++ > n := by
-  sorry
+  rw [Nat.gt_iff_lt, Nat.lt_iff]
+  constructor
+  . constructor
+    . rw [succ_eq_add_one]
+  . intro h
+    rw [← add_zero n, ← add_succ] at h
+    apply add_left_cancel at h
+    have := Nat.succ_ne_zero 0
+    contradiction
 
 /-- Proposition 2.2.12 (Basic properties of order for natural numbers) / Exercise 2.2.3
 
